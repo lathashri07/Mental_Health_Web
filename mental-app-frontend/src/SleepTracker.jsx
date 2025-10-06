@@ -5,6 +5,45 @@ import SleepGraph from './SleepGraph';
 import DailyFeedback from './DailyFeedback';
 import WeeklyFeedback from './WeeklyFeedback';
 import { useInactivityDetector } from './useInactivityDetector'; // Make sure this import is present
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+// 🤖 1. Function to generate the AI greeting
+const generateGreeting = async (userName) => {
+  // Ensure you have the API key in your .env.local file
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    console.error("Gemini API key not found.");
+    return "Good morning! Have a wonderful day."; // Fallback message
+  }
+
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const prompt = `Create a short, positive, one-sentence good morning message for ${userName}, a user of a sleep tracking app. Be creative, uplifting, and mention the new day.`;
+
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    return response.text().trim();
+  } catch (error) {
+    console.error("Error generating AI greeting:", error);
+    return `Good morning, ${userName}! Wishing you a great day ahead.`; // Fallback on error
+  }
+};
+
+// 🗣️ 2. Function to make the browser speak
+const speakMessage = (text) => {
+  // Check if the browser supports the Speech Synthesis API
+  if ('speechSynthesis' in window) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    // Optional: Configure voice, pitch, rate
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    window.speechSynthesis.speak(utterance);
+  } else {
+    console.error("Sorry, your browser does not support text-to-speech.");
+  }
+};
 
 function SleepTracker() {
   const [sleepData, setSleepData] = useState([]);
@@ -13,7 +52,19 @@ function SleepTracker() {
   // State for the input form
   const [sleepTime, setSleepTime] = useState('22:00');
   const [wakeTime, setWakeTime] = useState('06:00');
-  const [autoDetect, setAutoDetect] = useState(false);
+
+  // Read the saved preference from localStorage when the component first loads.
+  // The value is stored as a string 'true' or 'false', so we compare it.
+  const [autoDetect, setAutoDetect] = useState(() => {
+    const savedPreference = localStorage.getItem('autoDetectSleep');
+    return savedPreference === 'true';
+  });
+
+  // This effect runs whenever the 'autoDetect' state changes.
+  // It saves the new value ('true' or 'false') to localStorage.
+  useEffect(() => {
+    localStorage.setItem('autoDetectSleep', autoDetect);
+  }, [autoDetect]);
 
   // This effect runs once to load initial data from the browser's storage
   useEffect(() => {
@@ -86,6 +137,33 @@ function SleepTracker() {
   
   // Determine if the weekly report should be shown
   const showWeeklyReport = sleepData.length > 0 && sleepData.length % 7 === 0;
+
+  // ✅ NEW: This effect handles the morning greeting
+  useEffect(() => {
+    const handleMorningGreeting = async () => {
+      const now = new Date();
+      const currentHour = now.getHours();
+      const today = now.toISOString().split('T')[0]; // Get date in "YYYY-MM-DD" format
+
+      const lastGreetingDate = localStorage.getItem('lastGreetingDate');
+
+      // Trigger only between 5 AM and 11 AM, and only once per day
+      if (currentHour >= 5 && currentHour < 12 && lastGreetingDate !== today) {
+        
+        // Get user name from localStorage (or set a default)
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userName = user?.name || "there";
+
+        const greetingMessage = await generateGreeting(userName);
+        speakMessage(greetingMessage);
+        
+        // Mark that the greeting has been given for today
+        localStorage.setItem('lastGreetingDate', today);
+      }
+    };
+
+    handleMorningGreeting();
+  }, []); // The empty array [] means this effect runs only once when the component mounts
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-start bg-gray-100 p-4 gap-8 pt-8">
