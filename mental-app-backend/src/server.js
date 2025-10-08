@@ -7,6 +7,7 @@ import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import { Client } from '@googlemaps/google-maps-services-js';
+import { WebSocketServer } from 'ws';
 
 dotenv.config();
 const app = express();
@@ -16,6 +17,30 @@ const PORT = Number(process.env.PORT || 3000);
 app.use(cors({
   origin: "http://localhost:5173"
 }));
+
+const wss = new WebSocketServer({ server: `http://localhost:${PORT}`});
+
+wss.on('connection', ws => {
+  console.log('Client connected');
+
+  ws.on('message', async message => {
+    // 1. Receive text from client (e.g., "I've been feeling anxious lately")
+    const userText = message.toString();
+    
+    // 2. Get a response from the LLM (See Step 4)
+    const llmResponseText = await getLlmResponse(userText);
+
+    // 3. Generate the AI avatar video (See Step 5)
+    const videoUrl = await generateAiVideo(llmResponseText);
+
+    // 4. Send the video URL back to the client
+    ws.send(JSON.stringify({ type: 'video', url: videoUrl }));
+  });
+
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
+});
 
 // Middleware to authenticate JWT
 const authenticateToken = (req, res, next) => {
