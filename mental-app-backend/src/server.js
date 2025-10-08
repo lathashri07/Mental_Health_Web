@@ -8,6 +8,7 @@ import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import { Client } from '@googlemaps/google-maps-services-js';
 import { WebSocketServer } from 'ws';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 dotenv.config();
 const app = express();
@@ -41,6 +42,26 @@ wss.on('connection', ws => {
     console.log('Client disconnected');
   });
 });
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+async function getLlmResponse(userInput) {
+  const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+
+  const prompt = `
+    You are a friendly and empathetic virtual medical assistant. 
+    Your goal is to listen to the user and ask clarifying questions. 
+    NEVER provide a diagnosis or prescribe medication. 
+    Always end your response with the disclaimer: "Remember, I am an AI assistant. Please consult with a human doctor for any medical advice."
+    
+    User's statement: "${userInput}"
+    Your response:
+  `;
+
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+  return response.text();
+}
 
 // Middleware to authenticate JWT
 const authenticateToken = (req, res, next) => {
