@@ -26,7 +26,11 @@ function Login() {
     e.preventDefault();
     try {
       const res = await axios.post(apiEndpoints.LOGIN_API, form);
-      localStorage.setItem("user", JSON.stringify(res.data));
+      // 1. Save the token under the key "token"
+      localStorage.setItem("token", res.data.token);
+
+      // 2. Save the user object under the key "user"
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
       // Handle "Remember Me" logic
       if (rememberMe) {
