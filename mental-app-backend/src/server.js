@@ -6,6 +6,7 @@ import cors from "cors";
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
+import { Client } from '@googlemaps/google-maps-services-js';
 
 dotenv.config();
 const app = express();
@@ -250,6 +251,55 @@ app.post('/sleep-entries', authenticateToken, async (req, res) => {
 
     } catch (e) {
         res.status(500).json({ message: 'Server error', error: String(e) });
+    }
+});
+
+// ========== DOCTOR SUGGESTION ENDPOINT (Protected) ==========
+
+app.get('/doctors', authenticateToken, async (req, res) => {
+    // 1. Get location from the frontend query parameters
+    const { lat, lng } = req.query;
+
+    if (!lat || !lng) {
+        return res.status(400).json({ message: 'Latitude and longitude are required.' });
+    }
+
+    // Initialize the Google Maps Client
+    const client = new Client({});
+
+    try {
+        // 2. Make the API request to Google Places
+        const response = await client.placesNearby({
+            params: {
+                location: { lat, lng }, // User's location
+                radius: 5000,           // Search within a 5km radius
+                keyword: 'psychiatrist',// Search for psychiatrists
+                key: process.env.GOOGLE_PLACES_API_KEY,
+            },
+            timeout: 1000, // Optional timeout
+        });
+
+        // 3. Process the results from Google
+        // The API returns a lot of data; we'll extract what we need.
+        const doctors = response.data.results.map(place => {
+            return {
+                id: place.place_id,
+                name: place.name,
+                address: place.vicinity, // 'vicinity' is a simplified address
+                rating: place.rating || 0, // The place's rating, from 1.0 to 5.0
+                total_ratings: place.user_ratings_total || 0,
+                location: place.geometry.location,
+                // Note: Fee and Gender are NOT provided by the Google Places API.
+                // You would need a more specialized healthcare API for that data.
+            };
+        });
+
+        // 4. Send the processed list back to the frontend
+        res.json(doctors);
+
+    } catch (error) {
+        console.error('Google Places API Error:', error);
+        res.status(500).json({ message: 'Failed to fetch doctors.', error: error.message });
     }
 });
 
