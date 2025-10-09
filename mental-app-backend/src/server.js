@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken';
 import { Client } from '@googlemaps/google-maps-services-js';
 import { WebSocketServer } from 'ws';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import fetch from 'node-fetch';
 
 dotenv.config();
 const app = express();
@@ -348,6 +349,59 @@ app.get('/doctors', authenticateToken, async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch doctors.', error: error.message });
     }
 });
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function generateAiVideo(textToSpeak) {
+  // Step 1: Create the talk and get the ID
+  const createResponse = await fetch('https://api.d-id.com/talks', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${process.env.DID_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      source_url: "YOUR_AVATAR_IMAGE_URL",
+      script: {
+        type: 'text',
+        input: textToSpeak,
+        provider: { // Optional: for a better voice
+            type: "microsoft",
+            voice_id: "en-US-JennyNeural"
+        }
+      },
+    }),
+  });
+
+  const createData = await createResponse.json();
+  const talkId = createData.id;
+
+  // Step 2: Poll for the result
+  let talkResult;
+  while (true) {
+    talkResult = await fetch(`https://api.d-id.com/talks/${talkId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Basic ${process.env.DID_API_KEY}`,
+      },
+    }).then(res => res.json());
+
+    if (talkResult.status === 'done' || talkResult.status === 'error') {
+      break; // Exit the loop if the job is done or failed
+    }
+
+    await sleep(3000); // Wait for 3 seconds before checking again
+  }
+  
+  // Step 3: Return the final URL
+  if (talkResult.status === 'done') {
+    return talkResult.result_url;
+  } else {
+    // Handle the case where the video generation failed
+    console.error("D-ID video generation failed:", talkResult);
+    return null; 
+  }
+}
 
 // List users 
 app.get('/users', async (_req, res) => {
