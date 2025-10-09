@@ -14,35 +14,10 @@ import fetch from 'node-fetch';
 dotenv.config();
 const app = express();
 app.use(express.json());
-const PORT = Number(process.env.PORT || 3000);
 
 app.use(cors({
   origin: "http://localhost:5173"
 }));
-
-const wss = new WebSocketServer({ server: `http://localhost:${PORT}`});
-
-wss.on('connection', ws => {
-  console.log('Client connected');
-
-  ws.on('message', async message => {
-    // 1. Receive text from client (e.g., "I've been feeling anxious lately")
-    const userText = message.toString();
-    
-    // 2. Get a response from the LLM (See Step 4)
-    const llmResponseText = await getLlmResponse(userText);
-
-    // 3. Generate the AI avatar video (See Step 5)
-    const videoUrl = await generateAiVideo(llmResponseText);
-
-    // 4. Send the video URL back to the client
-    ws.send(JSON.stringify({ type: 'video', url: videoUrl }));
-  });
-
-  ws.on('close', () => {
-    console.log('Client disconnected');
-  });
-});
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -348,6 +323,28 @@ app.get('/doctors', authenticateToken, async (req, res) => {
         console.error('Google Places API Error:', error);
         res.status(500).json({ message: 'Failed to fetch doctors.', error: error.message });
     }
+});
+// ========== AI VIDEO GENERATION VIA WEBSOCKETS ==========
+const PORT = process.env.PORT || 3000;
+const server = app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
+
+const wss = new WebSocketServer({ server }); // Use the 'server' object here
+
+wss.on('connection', ws => {
+  console.log('Client connected');
+
+  ws.on('message', async message => {
+    const userText = message.toString();
+    const llmResponseText = await getLlmResponse(userText);
+    const videoUrl = await generateAiVideo(llmResponseText);
+    ws.send(JSON.stringify({ type: 'video', url: videoUrl }));
+  });
+
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
 });
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));

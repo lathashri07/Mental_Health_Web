@@ -4,6 +4,7 @@ import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import SleepTracker from "./SleepTracker";
 import DoctorsPage from "./DoctorsPage";
+import VirtualDoctor from "./VirtualDoctor";
 import ForgotPassword from "../components/utils/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
 
@@ -19,6 +20,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/sleep-tracker" element={<SleepTracker />} />
       <Route path="/doctors" element={<DoctorsPage />} />
+      <Route path="/virtual-doctor" element={<VirtualDoctor />} />
       <Route path="/" element={<Login />} />
     </Routes>
   );
