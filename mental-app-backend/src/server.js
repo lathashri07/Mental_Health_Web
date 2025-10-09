@@ -357,3 +357,33 @@ async function getLlmResponse(userInput) {
   const response = await result.response;
   return response.text();
 }
+
+async function generateAiVideo(textToSpeak) {
+  // This is the API endpoint for creating a new video ("talk")
+  const D_ID_URL = 'https://api.d-id.com/talks';
+
+  // These are the instructions and credentials for our request
+  const D_ID_HEADERS = {
+    'Authorization': `Basic ${process.env.DID_API_KEY}`, // Uses the Base64 key from your .env file
+    'Content-Type': 'application/json',
+  };
+
+  // This is the "payload" - the data we are sending to D-ID
+  const payload = {
+    // The URL of the doctor's picture you prepared in Step 5.1
+    source_url: "http://localhost:5173/Doctor.jpg", 
+    
+    // The text from Gemini that you want the doctor to say
+    script: {
+      type: 'text',
+      input: textToSpeak,
+      // (Optional but recommended) Choose a higher quality voice
+      provider: {
+          type: "microsoft",
+          voice_id: "en-US-JennyNeural"
+      }
+    },
+  };
+
+  // The code to actually send the request will go here...
+}
