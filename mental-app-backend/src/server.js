@@ -323,28 +323,6 @@ app.get('/doctors', authenticateToken, async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch doctors.', error: error.message });
     }
 });
-// ========== AI VIDEO GENERATION VIA WEBSOCKETS ==========
-const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
-
-const wss = new WebSocketServer({ server }); // Use the 'server' object here
-
-wss.on('connection', ws => {
-  console.log('Client connected');
-
-  ws.on('message', async message => {
-    const userText = message.toString();
-    const llmResponseText = await getLlmResponse(userText);
-    const videoUrl = await generateAiVideo(llmResponseText);
-    ws.send(JSON.stringify({ type: 'video', url: videoUrl }));
-  });
-
-  ws.on('close', () => {
-    console.log('Client disconnected');
-  });
-});
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -408,3 +386,27 @@ app.get('/users', async (_req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+const wss = new WebSocketServer({ server: `http://localhost:${PORT}` }); // Attach to your existing server
+
+wss.on('connection', ws => {
+  console.log('Client connected');
+
+  ws.on('message', async message => {
+    // 1. Receive text from client (e.g., "I've been feeling anxious lately")
+    const userText = message.toString();
+    
+    // 2. Get a response from the LLM (See Step 4)
+    const llmResponseText = await getLlmResponse(userText);
+
+    // 3. Generate the AI avatar video (See Step 5)
+    const videoUrl = await generateAiVideo(llmResponseText);
+
+    // 4. Send the video URL back to the client
+    ws.send(JSON.stringify({ type: 'video', url: videoUrl }));
+  });
+
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
+});
