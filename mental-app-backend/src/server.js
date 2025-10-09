@@ -361,7 +361,7 @@ async function generateAiVideo(textToSpeak) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      source_url: "YOUR_AVATAR_IMAGE_URL",
+      source_url: "https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg",
       script: {
         type: 'text',
         input: textToSpeak,
