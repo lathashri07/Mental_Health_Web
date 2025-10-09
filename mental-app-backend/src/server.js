@@ -379,7 +379,7 @@ async function generateAiVideo(textToSpeak) {
   // This is the "payload" - the data we are sending to D-ID
   const payload = {
     // The URL of the doctor's picture you prepared in Step 5.1
-    source_url: "http://localhost:5173/Doctor.jpg", 
+    source_url: "https://ibb.co/qYHbR5WG", 
     
     // The text from Gemini that you want the doctor to say
     script: {
