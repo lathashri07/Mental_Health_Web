@@ -13,11 +13,10 @@ import fetch from 'node-fetch';
 
 dotenv.config();
 const app = express();
-app.use(express.json());
-
 app.use(cors({
   origin: "http://localhost:5173"
 }));
+app.use(express.json());
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
