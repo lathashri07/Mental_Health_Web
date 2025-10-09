@@ -312,7 +312,9 @@ app.get('/users', async (_req, res) => {
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`)
+});
 
 const wss = new WebSocketServer({ server: `http://localhost:${PORT}` }); // Attach to your existing server
 
