@@ -18,26 +18,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-async function getLlmResponse(userInput) {
-  const model = genAI.getGenerativeModel({ model: "gemini-pro"});
-
-  const prompt = `
-    You are a friendly and empathetic virtual medical assistant. 
-    Your goal is to listen to the user and ask clarifying questions. 
-    NEVER provide a diagnosis or prescribe medication. 
-    Always end your response with the disclaimer: "Remember, I am an AI assistant. Please consult with a human doctor for any medical advice."
-    
-    User's statement: "${userInput}"
-    Your response:
-  `;
-
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  return response.text();
-}
-
 // Middleware to authenticate JWT
 const authenticateToken = (req, res, next) => {
     // Get token from the Authorization header (e.g., "Bearer TOKEN")
@@ -324,59 +304,6 @@ app.get('/doctors', authenticateToken, async (req, res) => {
     }
 });
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-async function generateAiVideo(textToSpeak) {
-  // Step 1: Create the talk and get the ID
-  const createResponse = await fetch('https://api.d-id.com/talks', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Basic ${process.env.DID_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      source_url: "https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg",
-      script: {
-        type: 'text',
-        input: textToSpeak,
-        provider: { // Optional: for a better voice
-            type: "microsoft",
-            voice_id: "en-US-JennyNeural"
-        }
-      },
-    }),
-  });
-
-  const createData = await createResponse.json();
-  const talkId = createData.id;
-
-  // Step 2: Poll for the result
-  let talkResult;
-  while (true) {
-    talkResult = await fetch(`https://api.d-id.com/talks/${talkId}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Basic ${process.env.DID_API_KEY}`,
-      },
-    }).then(res => res.json());
-
-    if (talkResult.status === 'done' || talkResult.status === 'error') {
-      break; // Exit the loop if the job is done or failed
-    }
-
-    await sleep(3000); // Wait for 3 seconds before checking again
-  }
-  
-  // Step 3: Return the final URL
-  if (talkResult.status === 'done') {
-    return talkResult.result_url;
-  } else {
-    // Handle the case where the video generation failed
-    console.error("D-ID video generation failed:", talkResult);
-    return null; 
-  }
-}
-
 // List users 
 app.get('/users', async (_req, res) => {
   try {
@@ -410,3 +337,23 @@ wss.on('connection', ws => {
     console.log('Client disconnected');
   });
 });
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+async function getLlmResponse(userInput) {
+  const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+
+  const prompt = `
+    You are a friendly and empathetic virtual medical assistant. 
+    Your goal is to listen to the user and ask clarifying questions. 
+    NEVER provide a diagnosis or prescribe medication. 
+    Always end your response with the disclaimer: "Remember, I am an AI assistant. Please consult with a human doctor for any medical advice."
+    
+    User's statement: "${userInput}"
+    Your response:
+  `;
+
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+  return response.text();
+}
