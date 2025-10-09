@@ -358,6 +358,9 @@ async function getLlmResponse(userInput) {
   return response.text();
 }
 
+// A helper function to make our code wait for a few seconds
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 async function generateAiVideo(textToSpeak) {
   // This is the API endpoint for creating a new video ("talk")
   const D_ID_URL = 'https://api.d-id.com/talks';
@@ -385,5 +388,37 @@ async function generateAiVideo(textToSpeak) {
     },
   };
 
-  // The code to actually send the request will go here...
+  // 1. Create the talk and get the ID
+  const createResponse = await fetch(D_ID_URL, {
+    method: 'POST',
+    headers: D_ID_HEADERS,
+    body: JSON.stringify(payload),
+  });
+  const createData = await createResponse.json();
+  const talkId = createData.id;
+
+  // 2. Poll for the result until it's "done"
+  let talkResult;
+  while (true) {
+    const getResponse = await fetch(`${D_ID_URL}/${talkId}`, {
+      method: 'GET',
+      headers: D_ID_HEADERS,
+    });
+    talkResult = await getResponse.json();
+
+    if (talkResult.status === 'done' || talkResult.status === 'error') {
+      break; // Exit the loop if the job is finished or has failed
+    }
+
+    await sleep(3000); // Wait for 3 seconds before checking again
+  }
+  
+  // 3. Return the final video URL
+  if (talkResult.status === 'done') {
+    console.log("Video generated successfully:", talkResult.result_url);
+    return talkResult.result_url;
+  } else {
+    console.error("D-ID video generation failed:", talkResult);
+    return null; 
+  }
 }
