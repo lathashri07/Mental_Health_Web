@@ -8,7 +8,7 @@ import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import { Client } from '@googlemaps/google-maps-services-js';
 import { WebSocketServer } from 'ws';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { VertexAI } from '@google-cloud/vertexai';
 import fetch from 'node-fetch';
 
 dotenv.config();
@@ -20,6 +20,11 @@ app.use(cors({
   origin: "http://localhost:5173"
 }));
 app.use(express.json());
+
+const vertex_ai = new VertexAI({
+  project: 'mental-health-app-474505', // Your Project ID
+  location: 'us-central1',
+});
 
 // Middleware to authenticate JWT
 const authenticateToken = (req, res, next) => {
@@ -343,24 +348,21 @@ wss.on('connection', ws => {
   });
 });
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
+// The getLlmResponse function for Vertex AI
 async function getLlmResponse(userInput) {
-  const model = genAI.getGenerativeModel({ model: "gemini-pro"});
-
-  const prompt = `
-    You are a friendly and empathetic virtual medical assistant. 
-    Your goal is to listen to the user and ask clarifying questions. 
-    NEVER provide a diagnosis or prescribe medication. 
-    Always end your response with the disclaimer: "Remember, I am an AI assistant. Please consult with a human doctor for any medical advice."
-    
-    User's statement: "${userInput}"
-    Your response:
-  `;
-
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  return response.text();
+  const model = vertex_ai.getGenerativeModel({ model: "gemini-pro" });
+  const prompt = `You are a friendly and empathetic virtual medical assistant. 
+      Your goal is to listen to the user and ask clarifying questions. 
+      NEVER provide a diagnosis or prescribe medication. 
+      Always end your response with the disclaimer: "Remember, I am an AI assistant. Please consult with a human doctor for any medical advice."`; // Your full prompt text
+  try {
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    return response.candidates[0].content.parts[0].text;
+  } catch (error) {
+    console.error("Vertex AI Error:", error.message);
+    return "I'm sorry, I encountered an error. Please try again.";
+  }
 }
 
 // A helper function to make our code wait for a few seconds

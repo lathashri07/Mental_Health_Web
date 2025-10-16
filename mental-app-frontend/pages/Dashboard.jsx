@@ -39,6 +39,15 @@ function Dashboard() {
         <h2 className="text-2xl font-bold mb-2">Consult Virtual AI Doctor 🤖</h2>
         <p>Have a conversation with our AI assistant.</p>
         </div>
+
+        {/* NEW: My Chatbot Card */}
+        <div
+          className="p-6 bg-indigo-500 text-white rounded-lg shadow-md cursor-pointer hover:bg-indigo-600 transition flex flex-col justify-center"
+          onClick={() => navigate("/chatbot")} // Navigate to your chatbot page
+        >
+          <h2 className="text-2xl font-bold mb-2">My Chatbot 💬</h2>
+          <p>Engage with your personalized AI mental health assistant.</p>
+        </div>
       </div>
     </div>
   );
