@@ -43,10 +43,18 @@ function Dashboard() {
         {/* NEW: My Chatbot Card */}
         <div
           className="p-6 bg-indigo-500 text-white rounded-lg shadow-md cursor-pointer hover:bg-indigo-600 transition flex flex-col justify-center"
-          onClick={() => navigate("/chatbot")} // Navigate to your chatbot page
-        >
+          onClick={() => navigate("/chatbot")} >  {/* Navigate to the chatbot page */}
           <h2 className="text-2xl font-bold mb-2">My Chatbot 💬</h2>
           <p>Engage with your personalized AI mental health assistant.</p>
+        </div>
+
+        {/* NEW: Music Therapy Card */}
+        <div
+          className="p-6 bg-rose-500 text-white rounded-lg shadow-md cursor-pointer hover:bg-rose-600 transition flex flex-col justify-center"
+          onClick={() => navigate("/music-therapy")} 
+        >
+          <h2 className="text-2xl font-bold mb-2">Relaxing Music 🎧</h2>
+          <p>Instrumental & Spiritual sounds for deep relaxation.</p>
         </div>
       </div>
     </div>
