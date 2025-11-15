@@ -7,6 +7,9 @@ import DoctorsPage from "./DoctorsPage";
 import VirtualDoctor from "./VirtualDoctor";
 import ForgotPassword from "../components/utils/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
+import Chatbot from "./Chatbot";
+import MusicTherapy from "./MusicTherapy";
+import MusicPlayer from "./MusicPlayer";
 
 
 function App() {
@@ -21,6 +24,9 @@ function App() {
       <Route path="/sleep-tracker" element={<SleepTracker />} />
       <Route path="/doctors" element={<DoctorsPage />} />
       <Route path="/virtual-doctor" element={<VirtualDoctor />} />
+      <Route path="/chatbot" element={<Chatbot />} />
+      <Route path="/music-therapy" element={<MusicTherapy />} />
+      <Route path="/music-player" element={<MusicPlayer />} />
       <Route path="/" element={<Login />} />
     </Routes>
   );
