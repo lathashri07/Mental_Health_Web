@@ -2,15 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import Webcam from 'react-webcam';
 import { useNavigate } from 'react-router-dom';
 
-// Simple SVG placeholder for the Doctor if you don't have a video file yet
-<video 
-  src="Virtual_Doctor.mp4" 
-  autoPlay 
-  loop 
-  muted 
-  className="w-full h-full object-cover" 
-/>
-
 function VirtualDoctor() {
   const [isCallActive, setIsCallActive] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -143,10 +134,7 @@ function VirtualDoctor() {
         
         {/* DOCTOR VIEW (AI) */}
         <div className="relative bg-gray-800 rounded-2xl overflow-hidden shadow-2xl border-2 border-gray-700">
-           {/* PRO TIP: Replace <DoctorPlaceholder/> with a <video> tag looping a video 
-              of a doctor looking at the camera. 
-           */}
-           <DoctorPlaceholder />
+           <video src="Virtual_Doctor.mp4" autoPlay loop muted className="w-full h-full object-cover" />
            
            {/* Visualizer when talking */}
            {isSpeaking && (
