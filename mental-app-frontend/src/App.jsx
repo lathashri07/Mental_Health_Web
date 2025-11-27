@@ -12,6 +12,8 @@ import MusicTherapy from "./MusicTherapy";
 import MusicPlayer from "./MusicPlayer";
 import VideoTherapy from "./VideoTherapy";
 import VideoPlayer from "./VideoPlayer";
+import BooksLibrary from "./BooksLibrary";
+import BookReader from "./BookReader";
 
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
       <Route path="/music-player" element={<MusicPlayer />} />
       <Route path="/video-therapy" element={<VideoTherapy />} />
       <Route path="/video-player" element={<VideoPlayer />} />
+      <Route path="/books-library" element={<BooksLibrary />} />
+      <Route path="/book-reader" element={<BookReader />} />
       <Route path="/" element={<Login />} />
     </Routes>
   );
