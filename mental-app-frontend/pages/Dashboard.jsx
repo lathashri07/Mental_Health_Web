@@ -68,11 +68,11 @@ function Dashboard() {
 
         {/* NEW: Books & Reading Card */}
         <div
-          className="p-6 bg-pink-600 text-white rounded-lg shadow-md cursor-pointer hover:bg-teal-700 transition flex flex-col justify-center"
+          className="p-6 bg-pink-600 text-white rounded-lg shadow-md cursor-pointer hover:bg-pink-700 transition flex flex-col justify-center"
           onClick={() => navigate("/books-library")} 
         >
           <h2 className="text-2xl font-bold mb-2">Books & Reading</h2>
-          <p>Books & Reading for physical and mental wellness.</p>
+          <p>Books & Reading for mental wellness.</p>
         </div>
       </div>
     </div>
