@@ -56,6 +56,24 @@ function Dashboard() {
           <h2 className="text-2xl font-bold mb-2">Relaxing Music 🎧</h2>
           <p>Instrumental & Spiritual sounds for deep relaxation.</p>
         </div>
+
+        {/* NEW: Video Guides Card */}
+        <div
+          className="p-6 bg-teal-600 text-white rounded-lg shadow-md cursor-pointer hover:bg-teal-700 transition flex flex-col justify-center"
+          onClick={() => navigate("/video-therapy")} 
+        >
+          <h2 className="text-2xl font-bold mb-2">Yoga & Meditation 🧘‍♀️</h2>
+          <p>Guided videos for physical and mental wellness.</p>
+        </div>
+
+        {/* NEW: Books & Reading Card */}
+        <div
+          className="p-6 bg-pink-600 text-white rounded-lg shadow-md cursor-pointer hover:bg-teal-700 transition flex flex-col justify-center"
+          onClick={() => navigate("/books-library")} 
+        >
+          <h2 className="text-2xl font-bold mb-2">Books & Reading</h2>
+          <p>Books & Reading for physical and mental wellness.</p>
+        </div>
       </div>
     </div>
   );

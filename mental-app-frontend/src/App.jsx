@@ -10,6 +10,8 @@ import ResetPassword from "../pages/ResetPassword";
 import Chatbot from "./Chatbot";
 import MusicTherapy from "./MusicTherapy";
 import MusicPlayer from "./MusicPlayer";
+import VideoTherapy from "./VideoTherapy";
+import VideoPlayer from "./VideoPlayer";
 
 
 function App() {
@@ -27,6 +29,8 @@ function App() {
       <Route path="/chatbot" element={<Chatbot />} />
       <Route path="/music-therapy" element={<MusicTherapy />} />
       <Route path="/music-player" element={<MusicPlayer />} />
+      <Route path="/video-therapy" element={<VideoTherapy />} />
+      <Route path="/video-player" element={<VideoPlayer />} />
       <Route path="/" element={<Login />} />
     </Routes>
   );
