@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import VirtualDoctor from "./VirtualDoctor";
 
 function DoctorsPage() {
   const [location, setLocation] = useState(null);
@@ -130,6 +131,14 @@ function DoctorsPage() {
             </div>
           </>
         )}
+
+        <div className="p-6 bg-purple-600 text-white rounded-lg shadow-md cursor-pointer hover:bg-purple-700 transition flex flex-col justify-center" 
+        onClick={() => navigate("/virtual-doctor")}
+>
+        <h2 className="text-2xl font-bold mb-2">Consult Virtual AI Doctor 🤖</h2>
+        <p>Have a conversation with our AI assistant.</p>
+        </div>
+
       </div>
     </div>
   );
