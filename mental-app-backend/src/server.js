@@ -7,24 +7,21 @@ import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import { Client } from '@googlemaps/google-maps-services-js';
-import { WebSocketServer } from 'ws';
-import { VertexAI } from '@google-cloud/vertexai';
 import fetch from 'node-fetch';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 3000;
 
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
 app.use(cors({
   origin: "http://localhost:5173"
 }));
 app.use(express.json());
-
-const vertex_ai = new VertexAI({
-  project: 'mental-health-app-474505', // Your Project ID
-  location: 'us-central1',
-});
 
 // Middleware to authenticate JWT
 const authenticateToken = (req, res, next) => {
@@ -320,112 +317,40 @@ app.get('/users', async (_req, res) => {
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 
+app.post('/virtual-doctor/chat', authenticateToken, async (req, res) => {
+    const { message, history } = req.body; 
+
+    try {
+        // Construct the conversation context for Gemini
+        // We combine the system instruction + the user's latest message
+        // (Gemini handles history differently, but for a simple chat, this prompt engineering works well)
+        
+        const systemPrompt = `
+            You are Dr. Nova, a compassionate, empathetic, and professional virtual psychiatrist. 
+            You are conducting a video consultation. 
+            Keep your responses concise (2-3 sentences max) so the conversation flows naturally. 
+            Focus on active listening and asking gentle follow-up questions. 
+            Do not prescribe medication, but suggest coping mechanisms.
+            
+            Current User Message: "${message}"
+        `;
+
+        // If you want to include previous history context loosely:
+        // const context = history.map(msg => `${msg.role}: ${msg.content}`).join('\n');
+        
+        const result = await model.generateContent(systemPrompt);
+        const response = await result.response;
+        const aiResponse = response.text();
+
+        res.json({ reply: aiResponse });
+
+    } catch (error) {
+        console.error('Gemini API Error:', error);
+        res.status(500).json({ message: 'The virtual doctor is having trouble connecting.' });
+    }
+});
+
 const server = app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
 });
 
-const wss = new WebSocketServer({ server }); // Attach to your existing server
-
-wss.on('connection', ws => {
-  console.log('Client connected');
-
-  ws.on('message', async message => {
-    // 1. Receive text from client (e.g., "I've been feeling anxious lately")
-    const userText = message.toString();
-    
-    // 2. Get a response from the LLM (See Step 4)
-    const llmResponseText = await getLlmResponse(userText);
-
-    // 3. Generate the AI avatar video (See Step 5)
-    const videoUrl = await generateAiVideo(llmResponseText);
-
-    // 4. Send the video URL back to the client
-    ws.send(JSON.stringify({ type: 'video', url: videoUrl }));
-  });
-
-  ws.on('close', () => {
-    console.log('Client disconnected');
-  });
-});
-
-// The getLlmResponse function for Vertex AI
-async function getLlmResponse(userInput) {
-  const model = vertex_ai.getGenerativeModel({ model: "gemini-pro" });
-  const prompt = `You are a friendly and empathetic virtual medical assistant. 
-      Your goal is to listen to the user and ask clarifying questions. 
-      NEVER provide a diagnosis or prescribe medication. 
-      Always end your response with the disclaimer: "Remember, I am an AI assistant. Please consult with a human doctor for any medical advice."`; // Your full prompt text
-  try {
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    return response.candidates[0].content.parts[0].text;
-  } catch (error) {
-    console.error("Vertex AI Error:", error.message);
-    return "I'm sorry, I encountered an error. Please try again.";
-  }
-}
-
-// A helper function to make our code wait for a few seconds
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-async function generateAiVideo(textToSpeak) {
-  // This is the API endpoint for creating a new video ("talk")
-  const D_ID_URL = 'https://api.d-id.com/talks';
-
-  // These are the instructions and credentials for our request
-  const D_ID_HEADERS = {
-    'Authorization': `Basic ${process.env.DID_API_KEY}`, // Uses the Base64 key from your .env file
-    'Content-Type': 'application/json',
-  };
-
-  // This is the "payload" - the data we are sending to D-ID
-  const payload = {
-    // The URL of the doctor's picture you prepared in Step 5.1
-    source_url: "https://ibb.co/qYHbR5WG", 
-    
-    // The text from Gemini that you want the doctor to say
-    script: {
-      type: 'text',
-      input: textToSpeak,
-      // (Optional but recommended) Choose a higher quality voice
-      provider: {
-          type: "microsoft",
-          voice_id: "en-US-JennyNeural"
-      }
-    },
-  };
-
-  // 1. Create the talk and get the ID
-  const createResponse = await fetch(D_ID_URL, {
-    method: 'POST',
-    headers: D_ID_HEADERS,
-    body: JSON.stringify(payload),
-  });
-  const createData = await createResponse.json();
-  const talkId = createData.id;
-
-  // 2. Poll for the result until it's "done"
-  let talkResult;
-  while (true) {
-    const getResponse = await fetch(`${D_ID_URL}/${talkId}`, {
-      method: 'GET',
-      headers: D_ID_HEADERS,
-    });
-    talkResult = await getResponse.json();
-
-    if (talkResult.status === 'done' || talkResult.status === 'error') {
-      break; // Exit the loop if the job is finished or has failed
-    }
-
-    await sleep(3000); // Wait for 3 seconds before checking again
-  }
-  
-  // 3. Return the final video URL
-  if (talkResult.status === 'done') {
-    console.log("Video generated successfully:", talkResult.result_url);
-    return talkResult.result_url;
-  } else {
-    console.error("D-ID video generation failed:", talkResult);
-    return null; 
-  }
-}
