@@ -14,12 +14,12 @@ import VideoTherapy from "./VideoTherapy";
 import VideoPlayer from "./VideoPlayer";
 import BooksLibrary from "./BooksLibrary";
 import BookReader from "./BookReader";
+import LandingPage from "../pages/LandingPage";
 
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/signup" />} />
       <Route path="/signup" element={<Signup/>} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword/>} />
@@ -35,7 +35,7 @@ function App() {
       <Route path="/video-player" element={<VideoPlayer />} />
       <Route path="/books-library" element={<BooksLibrary />} />
       <Route path="/book-reader" element={<BookReader />} />
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<LandingPage />} />
     </Routes>
   );
 }
