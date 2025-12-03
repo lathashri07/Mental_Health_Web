@@ -317,60 +317,70 @@ app.get('/users', async (_req, res) => {
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 
-// ✅ MODIFIED: Chatbot Endpoint with Data Context (RAG)
+// 2. ✅ UPDATED: Chatbot with Sleep + Emotion Context
 app.post('/virtual-doctor/chat', authenticateToken, async (req, res) => {
     const { message } = req.body;
     const userId = req.user.id;
 
     try {
-        // 1. ANALYZE THE DATASET: Fetch user's recent sleep data (Last 7 entries)
+        // A. Fetch Sleep Data
         const [sleepRows] = await pool.execute(
-            `SELECT entry_date, duration, sleep_time, wake_time 
-             FROM sleep_entries 
-             WHERE user_id = ? 
-             ORDER BY entry_date DESC 
-             LIMIT 7`,
+            `SELECT entry_date, duration FROM sleep_entries WHERE user_id = ? ORDER BY entry_date DESC LIMIT 5`,
             [userId]
         );
+        const sleepContext = sleepRows.length ? sleepRows.map(r => `[Sleep] Date: ${r.entry_date.toISOString().split('T')[0]}, Duration: ${r.duration} hrs`).join('\n') : "No sleep data.";
 
-        // 2. Format the data into a readable string for the AI
-        let sleepContext = "No recent sleep data available.";
-        if (sleepRows.length > 0) {
-            sleepContext = sleepRows.map(row => 
-                `- Date: ${row.entry_date.toISOString().split('T')[0]}, Duration: ${row.duration} hours, Bedtime: ${row.sleep_time}, Wake up: ${row.wake_time}`
-            ).join('\n');
-        }
+        // B. Fetch Recent Emotions (Last 24 hours)
+        const [moodRows] = await pool.execute(
+            `SELECT emotion, created_at FROM mood_logs WHERE user_id = ? ORDER BY created_at DESC LIMIT 5`,
+            [userId]
+        );
+        const moodContext = moodRows.length ? moodRows.map(r => `[Mood History] Time: ${r.created_at}, Emotion: ${r.emotion}`).join('\n') : "No recent mood scans.";
 
-        // 3. Construct the System Prompt with the Data Context
+        // C. Construct System Prompt
         const systemPrompt = `
-            You are Dr. Nova, a compassionate virtual psychiatrist for the 'MindHaven' app.
+            You are Dr. Nova, a virtual psychiatrist.
             
-            == USER DATA CONTEXT (Analyze this to personalize your response) ==
-            The user's recent sleep patterns (last 7 days):
+            == PATIENT CONTEXT ==
             ${sleepContext}
-            ==================================================================
+            ${moodContext}
+            =====================
 
             INSTRUCTIONS:
-            1. Analyze the sleep data above. If the duration is low (< 6 hours), gently express concern.
-            2. Answer the user's current message: "${message}"
-            3. Keep responses concise (3-4 sentences max), empathetic, and professional.
-            4. Do not act as a doctor prescribing meds; act as a supportive therapist.
+            1. Look at the [Mood History]. If the user was recently 'sad' or 'fearful', acknowledge it gently.
+            2. Look at [Sleep]. If sleep is low, connect it to their mood.
+            3. User Message: "${message}"
+            4. Keep response under 3 sentences. Be empathetic.
         `;
 
-        // 4. Generate Response
         const result = await model.generateContent(systemPrompt);
         const response = await result.response;
-        const aiResponse = response.text();
-
-        res.json({ reply: aiResponse });
+        res.json({ reply: response.text() });
 
     } catch (error) {
-        console.error('Gemini API Error:', error);
-        res.status(500).json({ message: 'Dr. Nova is currently unavailable.' });
+        console.error('Gemini Error:', error);
+        res.status(500).json({ message: 'Dr. Nova is offline.' });
     }
 });
 
+// 1. ✅ NEW: Post Mood Log Endpoint
+app.post('/mood-logs', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { emotion, confidence, note } = req.body;
 
+        if (!emotion) return res.status(400).json({ message: 'Emotion is required' });
+
+        await pool.execute(
+            'INSERT INTO mood_logs (user_id, emotion, confidence, note) VALUES (?, ?, ?, ?)',
+            [userId, emotion, confidence || 0, note || 'Detected via Face AI']
+        );
+
+        res.status(201).json({ message: 'Mood logged successfully.' });
+    } catch (e) {
+        res.status(500).json({ error: String(e) });
+    }
+});
 
 const server = app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
