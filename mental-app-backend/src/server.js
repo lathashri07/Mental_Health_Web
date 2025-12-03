@@ -317,27 +317,47 @@ app.get('/users', async (_req, res) => {
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 
+// ✅ MODIFIED: Chatbot Endpoint with Data Context (RAG)
 app.post('/virtual-doctor/chat', authenticateToken, async (req, res) => {
-    const { message, history } = req.body; 
+    const { message } = req.body;
+    const userId = req.user.id;
 
     try {
-        // Construct the conversation context for Gemini
-        // We combine the system instruction + the user's latest message
-        // (Gemini handles history differently, but for a simple chat, this prompt engineering works well)
-        
+        // 1. ANALYZE THE DATASET: Fetch user's recent sleep data (Last 7 entries)
+        const [sleepRows] = await pool.execute(
+            `SELECT entry_date, duration, sleep_time, wake_time 
+             FROM sleep_entries 
+             WHERE user_id = ? 
+             ORDER BY entry_date DESC 
+             LIMIT 7`,
+            [userId]
+        );
+
+        // 2. Format the data into a readable string for the AI
+        let sleepContext = "No recent sleep data available.";
+        if (sleepRows.length > 0) {
+            sleepContext = sleepRows.map(row => 
+                `- Date: ${row.entry_date.toISOString().split('T')[0]}, Duration: ${row.duration} hours, Bedtime: ${row.sleep_time}, Wake up: ${row.wake_time}`
+            ).join('\n');
+        }
+
+        // 3. Construct the System Prompt with the Data Context
         const systemPrompt = `
-            You are Dr. Nova, a compassionate, empathetic, and professional virtual psychiatrist. 
-            You are conducting a video consultation. 
-            Keep your responses concise (2-3 sentences max) so the conversation flows naturally. 
-            Focus on active listening and asking gentle follow-up questions. 
-            Do not prescribe medication, but suggest coping mechanisms.
+            You are Dr. Nova, a compassionate virtual psychiatrist for the 'MindHaven' app.
             
-            Current User Message: "${message}"
+            == USER DATA CONTEXT (Analyze this to personalize your response) ==
+            The user's recent sleep patterns (last 7 days):
+            ${sleepContext}
+            ==================================================================
+
+            INSTRUCTIONS:
+            1. Analyze the sleep data above. If the duration is low (< 6 hours), gently express concern.
+            2. Answer the user's current message: "${message}"
+            3. Keep responses concise (3-4 sentences max), empathetic, and professional.
+            4. Do not act as a doctor prescribing meds; act as a supportive therapist.
         `;
 
-        // If you want to include previous history context loosely:
-        // const context = history.map(msg => `${msg.role}: ${msg.content}`).join('\n');
-        
+        // 4. Generate Response
         const result = await model.generateContent(systemPrompt);
         const response = await result.response;
         const aiResponse = response.text();
@@ -346,9 +366,11 @@ app.post('/virtual-doctor/chat', authenticateToken, async (req, res) => {
 
     } catch (error) {
         console.error('Gemini API Error:', error);
-        res.status(500).json({ message: 'The virtual doctor is having trouble connecting.' });
+        res.status(500).json({ message: 'Dr. Nova is currently unavailable.' });
     }
 });
+
+
 
 const server = app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
