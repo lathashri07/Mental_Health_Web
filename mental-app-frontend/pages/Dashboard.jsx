@@ -164,7 +164,7 @@ function Dashboard() {
         <div className="relative w-full h-80 rounded-3xl overflow-hidden shadow-2xl mb-12 group">
           {/* Background Image */}
           <img 
-            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop" 
+            src="background-img.png" 
             alt="Calm Ocean" 
             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
           />
