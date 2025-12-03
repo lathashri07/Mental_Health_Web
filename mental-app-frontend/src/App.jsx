@@ -15,6 +15,7 @@ import VideoPlayer from "./VideoPlayer";
 import BooksLibrary from "./BooksLibrary";
 import BookReader from "./BookReader";
 import LandingPage from "../pages/LandingPage";
+import FaceRecognition from "./FaceRecognition";
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
       <Route path="/video-player" element={<VideoPlayer />} />
       <Route path="/books-library" element={<BooksLibrary />} />
       <Route path="/book-reader" element={<BookReader />} />
+      <Route path="/face-recognition" element={<FaceRecognition />} />
       <Route path="/" element={<LandingPage />} />
     </Routes>
   );
