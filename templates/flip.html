@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healware Magazine Flipbooks (Grid Layout)</title>
+
+  <style>
+    /* Page / body */
+    :root {
+      --green: #22c55e;
+      --green-dark: #16a34a;
+      --bg: #f1f5f9;
+      --max-width: 1200px;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: var(--bg);
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      padding-bottom: 40px;
+    }
+
+    /* Navbar */
+    nav {
+      width: 100%;
+      background: #000;
+      color: #fff;
+      box-sizing: border-box;
+      padding: 18px 22px;
+      display: flex;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    nav .nav-inner {
+      width: 100%;
+      max-width: var(--max-width);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav a.home-link, nav .brand {
+      color: white;
+      text-decoration: none;
+      font-weight: 1000;
+      font:bold;
+    }
+
+
+    header h1 {
+      margin: 18px 0 6px 0;
+      font-size: 26px;
+      text-align: center;
+      color: #0f172a;
+    }
+
+    header p.subtitle {
+      margin: 0;
+      color: #475569;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    /* === GRID SETUP === */
+    .magazine-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      width: 100%;
+      max-width: var(--max-width);
+      padding: 10px 20px;
+      box-sizing: border-box;
+      margin-right: 50px;
+    }
+
+    /* For smaller screens (mobile): stack one per row */
+    @media (max-width: 900px) {
+      .magazine-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* === Book Wrapper === */
+    .book-wrapper {
+      background: white;
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow: 0 6px 20px rgba(2,6,23,0.08);
+      /* margin-right: 10px; */
+    }
+
+    .book-title {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    .flipbook-container {
+      perspective: 2000px;
+      width: 585px;
+      height: 420px;
+      position: relative;
+      margin: 0 auto;
+      background: #f8fafc;
+      border-radius: 10px;
+    }
+
+    .page {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: left center;
+      transition: transform 0.9s cubic-bezier(.2,.8,.2,1);
+      backface-visibility: hidden;
+      border-radius: 8px;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+    }
+
+    .page img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      -webkit-user-drag: none;
+      user-select: none;
+    }
+
+    .page.flipped {
+      transform: rotateY(-180deg);
+    }
+
+    .controls {
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .controls button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      background: var(--green);
+      color: white;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 6px 14px rgba(34,197,94,0.18);
+    }
+
+    .controls button:hover {
+      background: var(--green-dark);
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a class="brand" href="{{ url_for('home') }}">Healware</a>
+      <a class="home-link" href="{{ url_for('home') }}">Back to Home</a>
+    </div>
+  </nav>
+
+  <header>
+    <h1>Healware Wellness Magazines</h1>
+
+  </header>
+
+  <!-- ===== GRID 1 ===== -->
+  <section class="magazine-grid">
+    <!-- Book 1 -->
+    <div class="book-wrapper">
+      <div class="book-title">Magazine 1 — Healware Pages</div>
+      <div class="flipbook-container book" data-book="1">
+         <div class="page"><img src="{{ url_for('static', filename='magazine-pages/slide1.jpg') }}" alt="Page 1"></div>
+        <div class="page"><img src="{{ url_for('static', filename='magazine-pages/slide2.jpg') }}" alt="Page 2"></div>
+        <div class="page"><img src="{{ url_for('static', filename='magazine-pages/slide3.jpg') }}" alt="Page 3"></div>
+        <div class="page"><img src="{{ url_for('static', filename='magazine-pages/slide4.jpg') }}" alt="Page 4"></div>
+      </div>
+      <div class="controls">
+        <button class="prev-btn">Previous</button>
+        <button class="next-btn">Next</button>
+      </div>
+    </div>
+
+    <!-- Book 2 -->
+    <div class="book-wrapper">
+      <div class="book-title">Magazine 2 — Nature Pages</div>
+      <div class="flipbook-container book" data-book="2">
+        <div class="page"><img src="{{ url_for('static', filename='Nature-pages/slide1.jpg') }}" alt="Page 1"></div>
+        <div class="page"><img src="{{ url_for('static', filename='Nature-pages/slide2.jpg') }}" alt="Page 2"></div>
+        <div class="page"><img src="{{ url_for('static', filename='Nature-pages/slide3.jpg') }}" alt="Page 3"></div>
+        <div class="page"><img src="{{ url_for('static', filename='Nature-pages/slide4.jpg') }}" alt="Page 4"></div>
+      </div>
+      <div class="controls">
+        <button class="prev-btn">Previous</button>
+        <button class="next-btn">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GRID 2 ===== -->
+  <section class="magazine-grid">
+    <!-- Book 3 -->
+    <div class="book-wrapper">
+      <div class="book-title">Magazine 3 — Buddhaa Pages</div>
+      <div class="flipbook-container book" data-book="3">
+        <div class="page"><img src="{{ url_for('static', filename='Buddhaa-pages/slide1.jpg') }}" alt="Page 1"></div>
+        <div class="page"><img src="{{ url_for('static', filename='Buddhaa-pages/slide2.jpg') }}" alt="Page 2"></div>
+        <div class="page"><img src="{{ url_for('static', filename='Buddhaa-pages/slide3.jpg') }}" alt="Page 3"></div>
+        <div class="page"><img src="{{ url_for('static', filename='Buddhaa-pages/slide4.jpg') }}" alt="Page 4"></div>
+      </div>
+      <div class="controls">
+        <button class="prev-btn">Previous</button>
+        <button class="next-btn">Next</button>
+      </div>
+    </div>
+
+    <!-- Book 4 -->
+    <div class="book-wrapper">
+      <div class="book-title">Magazine 4 — Dreamm Pages</div>
+      <div class="flipbook-container book" data-book="4">
+        <div class="page"><img src="{{ url_for('static', filename='Dreamm-pages/slide1.jpg') }}" alt="Page 1"></div>
+        <div class="page"><img src="{{ url_for('static', filename='Dreamm-pages/slide2.jpg') }}" alt="Page 2"></div>
+        <div class="page"><img src="{{ url_for('static', filename='Dreamm-pages/slide3.jpg') }}" alt="Page 3"></div>
+        <div class="page"><img src="{{ url_for('static', filename='Dreamm-pages/slide4.jpg') }}" alt="Page 4"></div>
+      </div>
+      <div class="controls">
+        <button class="prev-btn">Previous</button>
+        <button class="next-btn">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==== SCRIPT === -->
+  <script>
+    // Initialize each flipbook independently
+    document.querySelectorAll('.book').forEach((bookContainer) => {
+      const pages = Array.from(bookContainer.querySelectorAll('.page'));
+      let current = 0;
+
+      // Initial stacking (top page has highest z-index)
+      pages.forEach((p, i) => {
+        p.style.zIndex = pages.length - i;
+      });
+
+      const section = bookContainer.closest('.book-wrapper');
+      const prevBtn = section.querySelector('.prev-btn');
+      const nextBtn = section.querySelector('.next-btn');
+
+      nextBtn.addEventListener('click', () => {
+        if (current < pages.length) {
+          pages[current].classList.add('flipped');
+          pages[current].style.zIndex = current;
+          current++;
+        }
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (current > 0) {
+          current--;
+          pages[current].classList.remove('flipped');
+          pages[current].style.zIndex = pages.length - current;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

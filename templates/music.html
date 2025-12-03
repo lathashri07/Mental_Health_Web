@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top Navbar */
+        .navbar {
+            background-color: #222;
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-title {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 10px 16px;
+             background-color:black;
+            color:white;
+            border: none;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 17px;
+            font:bold;
+        }
+        .btn:hover {
+            background-color: #555;
+        }
+        
+        /* Video Grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .center-btn {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="navbar-title">Healware</div>
+    <button class="btn" onclick="window.location.href='/'">Back to Home</button>
+</div>
+
+
+
+<!-- FIRST ROW OF 4 VIDEOS -->
+<div class="video-grid">
+    <video controls>
+        <source src="{{ url_for('static', filename='videos/Sea.mp4') }}" type="video/mp4">
+    </video>
+
+    <video controls>
+        <source src="{{ url_for('static', filename='videos/bridge.mp4') }}" type="video/mp4">
+    </video>
+
+    <video controls>
+        <source src="{{ url_for('static', filename='videos/butterfly.mp4') }}" type="video/mp4">
+    </video>
+
+    <video controls>
+        <source src="{{ url_for('static', filename='videos/flower.mp4') }}" type="video/mp4">
+    </video>
+</div>
+
+
+
+<!-- HIDDEN VIDEOS -->
+<div id="moreVideos" class="hidden">
+    <div class="video-grid">
+        <video controls>
+            <source src="{{ url_for('static', filename='videos/leaf.mp4') }}" type="video/mp4">
+        </video>
+
+        <video controls>
+            <source src="{{ url_for('static', filename='videos/moon.mp4') }}" type="video/mp4">
+        </video>
+
+        <video controls>
+            <source src="{{ url_for('static', filename='videos/rain.mp4') }}" type="video/mp4">
+        </video>
+
+         <video controls>
+            <source src="{{ url_for('static', filename='videos/music.mp4') }}" type="video/mp4">
+        </video>
+    </div>
+</div>
+
+
+
+<!-- SEE MORE / SEE LESS BUTTONS -->
+<div class="center-btn">
+    <button id="seeMoreBtn" class="btn" onclick="showMore()">See More</button>
+    <button id="seeLessBtn" class="btn hidden" onclick="showLess()">See Less</button>
+</div>
+
+
+
+<script>
+    function showMore() {
+        document.getElementById("moreVideos").classList.remove("hidden");
+        document.getElementById("seeMoreBtn").classList.add("hidden");
+        document.getElementById("seeLessBtn").classList.remove("hidden");
+    }
+
+    function showLess() {
+        document.getElementById("moreVideos").classList.add("hidden");
+        document.getElementById("seeLessBtn").classList.add("hidden");
+        document.getElementById("seeMoreBtn").classList.remove("hidden");
+
+        // Scroll back to top of page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
