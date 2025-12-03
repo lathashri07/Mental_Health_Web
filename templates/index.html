@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Healware | Digital Therapy Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Navbar hover links */
+    .nav-link:hover { color:white; transition: 0.3s; }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- ✅ NAVBAR -->
+  <nav class="bg-gray-800 text-white flex justify-between items-center px-8 py-4 shadow-md">
+    <div><h1 class="text-2xl font-bold text-white cursor-pointer transition">Healware</h1></div>
+    <div class="flex space-x-8">
+      <a href="#home" class="nav-link text-lg">Home</a>
+      <a href="/about" target="_blank" class="nav-link text-lg">About Us</a>
+      <a href="/contact" target="_blank" class="nav-link text-lg">Contact Us</a>
+    </div>
+  </nav>
+  <div class="flex justify-center">
+      <img src="{{ url_for('static', filename='images/background-img.png') }}" class="w-85 shadow-lg" alt="Digital Therapy">
+  </div>
+
+  <section class="bg-gray-800 py-8 px-5 text-center">
+    <div>
+      <button onclick="scrollToModules()" class="bg-gray-200 text-black text-xl font-bold px-6 py-2 rounded-xl hover:bg-gray-300 transition">
+        Get Started
+      </button>
+    </div>
+  </section>
+
+  <!-- ✅ MODULES -->
+  <section id="modules" class="bg-gray-800 py-10 px-5">
+    <h2 class="text-center text-3xl font-bold mb-10 text-white">Explore Our Therapy Modules</h2>
+
+    <div class="grid md:grid-cols-3 gap-10">
+      
+      <!-- Music Therapy linked to backend route -->
+      <a href="/music" target="_blank" class="bg-white rounded-2xl shadow-md hover:shadow-xl p-5 text-center block">
+        <img src="{{ url_for('static', filename='images/mu.png') }}" class="mx-auto w-28 mb-3" alt="Music Therapy">
+        <h3 class="font-semibold text-xl text-black">Music Therapy</h3>
+      </a>
+
+      <div class="bg-white rounded-2xl shadow-md hover:shadow-xl p-5 text-center">
+         <img src="{{ url_for('static', filename='images/doctor.png') }}" class="mx-auto w-28 mb-3" alt="Doctor">
+        <h3 class="font-semibold text-xl text-black">Doctor Suggestions</h3>
+      </div>
+
+      <!-- Face Detection -->
+      <div onclick="startFaceDetection()" class="bg-white rounded-2xl shadow-md hover:shadow-xl p-5 text-center cursor-pointer">
+          <img src="{{ url_for('static', filename='images/facedet.png') }}" class="mx-auto w-28 mb-3" alt="Face Detection">
+        <h3 class="font-semibold text-xl text-black">Face Detection</h3>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-md hover:shadow-xl p-5 text-center">
+          <img src="{{ url_for('static', filename='images/chatboot.png') }}" class="mx-auto w-28 mb-3" alt="AI Chatbot">
+        <h3 class="font-semibold text-xl text-black">AI Chatbot</h3>
+      </div>
+
+      <!-- Magazines linked to backend -->
+      <a href="/magazines" target="_blank" class="bg-white rounded-2xl shadow-md hover:shadow-xl p-5 text-center block">
+          <img src="{{ url_for('static', filename='images/mgazine.png') }}" class="mx-auto w-28 mb-3" alt="Magazine">
+        <h3 class="font-semibold text-xl text-black">Magazines</h3>
+      </a>
+
+      <div class="bg-white rounded-2xl shadow-md hover:shadow-xl p-5 text-center">
+          <img src="{{ url_for('static', filename='images/tracker.png') }}" class="mx-auto w-28 mb-3" alt="Sleep Tracker">
+        <h3 class="font-semibold text-xl text-black">Sleep Tracker</h3>
+      </div>
+    </div>
+
+    <!-- Emotion Result Box -->
+    <div id="resultBox" class="hidden mt-10 text-center bg-green-100 border border-green-400 text-green-800 rounded-xl p-5 w-2/3 mx-auto"></div>
+  </section>
+
+  <!-- ✅ WHY CHOOSE US -->
+  <section class="bg-gray-800 py-16 px-10">
+    <h2 class="text-center text-3xl font-bold mb-10 text-white">Why Choose Our Platform?</h2>
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-xl mb-2 text-black-600">1. Personalized Healing</h3>
+        <p class="text-gray-700">Tailored therapy plans and content to match your emotional needs.</p>
+      </div>
+      <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-xl mb-2 text-black-600">2. AI-Powered Insights</h3>
+        <p class="text-gray-700">Our AI analyzes your emotions to provide meaningful suggestions.</p>
+      </div>
+      <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-xl mb-2 text-black-600">3. Face Emotion Detection</h3>
+        <p class="text-gray-700">Detects emotions using webcam to personalize therapy modules.</p>
+      </div>
+      <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-xl mb-2 text-black-600">4. Expert Doctor Network</h3>
+        <p class="text-gray-700">Connect instantly with verified mental health experts.</p>
+      </div>
+      <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-xl mb-2 text-black-600">5. Relaxation Tools</h3>
+        <p class="text-gray-700">Access breathing exercises, sound therapy, and sleep tools.</p>
+      </div>
+      <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-xl mb-2 text-black-600">6. Continuous Growth</h3>
+        <p class="text-gray-700">Track your mood progress and wellness journey with visual reports.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ✅ FOOTER -->
+  <footer class="bg-gray-600 text-white py-6 text-center">
+    <p>© 2025 Healware. All Rights Reserved.</p>
+  </footer>
+
+  <!-- ✅ JS -->
+  <script>
+    function scrollToModules() {
+      document.getElementById("modules").scrollIntoView({ behavior: "smooth" });
+    }
+
+    async function startFaceDetection() {
+      document.getElementById("resultBox").classList.remove("hidden");
+      document.getElementById("resultBox").innerText = "Detecting emotion... Please wait.";
+      try {
+        const res = await fetch("/detect_emotion");
+        const data = await res.json();
+        document.getElementById("resultBox").innerHTML =
+          `<strong>Detected Emotion:</strong> ${data.emotion.toUpperCase()}<br><br>${data.message}`;
+      } catch (err) {
+        document.getElementById("resultBox").innerText = "Error connecting to backend!";
+        console.error(err);
+      }
+    }
+  </script>
+
+</body>
+</html>
