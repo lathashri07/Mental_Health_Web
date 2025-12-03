@@ -382,6 +382,44 @@ app.post('/mood-logs', authenticateToken, async (req, res) => {
     }
 });
 
+// ✅ NEW: Get all public feedbacks (No auth required to READ)
+app.get('/feedbacks', async (_req, res) => {
+    try {
+        // Join with users table to get the username of the reviewer
+        const query = `
+            SELECT f.id, f.rating, f.message, f.created_at, u.username 
+            FROM feedbacks f 
+            JOIN users u ON f.user_id = u.id 
+            ORDER BY f.created_at DESC
+        `;
+        const [rows] = await pool.execute(query);
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: String(e) });
+    }
+});
+
+// ✅ NEW: Post a new feedback (Auth required to WRITE)
+app.post('/feedbacks', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { rating, message } = req.body;
+
+        if (!rating || !message) {
+            return res.status(400).json({ message: 'Rating and message are required' });
+        }
+
+        await pool.execute(
+            'INSERT INTO feedbacks (user_id, rating, message) VALUES (?, ?, ?)',
+            [userId, rating, message]
+        );
+
+        res.status(201).json({ message: 'Thank you for your feedback!' });
+    } catch (e) {
+        res.status(500).json({ error: String(e) });
+    }
+});
+
 const server = app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
 });
