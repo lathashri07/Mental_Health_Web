@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-function MusicPlayerFixed() {
+function MusicPlayer() {
     const location = useLocation();
     const navigate = useNavigate();
     
@@ -183,4 +183,4 @@ function MusicPlayerFixed() {
     );
 }
 
-export default MusicPlayerFixed;
+export default MusicPlayer;
