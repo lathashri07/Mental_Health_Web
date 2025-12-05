@@ -1,18 +1,110 @@
 import { useNavigate } from 'react-router-dom';
 
-// Dummy Data
+// ---------------------------------------------------------
+// UPDATED DATA SECTION
+// ---------------------------------------------------------
+
 const magazines = [
-  { id: 'mag1', title: 'Mindful Living', type: 'magazine', color: 'bg-red-200' },
-  { id: 'mag2', title: 'Nature Weekly', type: 'magazine', color: 'bg-green-200' },
-  { id: 'mag3', title: 'Tech Detox', type: 'magazine', color: 'bg-blue-200' },
-  { id: 'mag4', title: 'Art & Soul', type: 'magazine', color: 'bg-purple-200' },
+  { 
+    id: 'mag1', 
+    title: 'Peace', 
+    type: 'magazine', 
+    color: 'bg-red-200',
+    // ✅ ADDED: Specific pages for this magazine
+    pages: [
+      '/Buddha/slide1.jpg', 
+      '/Buddha/slide2.jpg',
+      '/Buddha/slide3.jpg',
+      '/Buddha/slide4.jpg',
+      '/Buddha/slide5.jpg',
+      '/Buddha/slide6.jpg',
+      '/Buddha/slide7.jpg',
+      '/Buddha/slide8.jpg'
+    ]
+  },
+  { 
+    id: 'mag2', 
+    title: 'Beach Vibes', 
+    type: 'magazine', 
+    color: 'bg-green-200',
+    // ✅ ADDED: Different pages for the second magazine
+    pages: [
+      '/Beach/slide1.jpg', 
+      '/Beach/slide2.jpg',
+      '/Beach/slide3.jpg',
+      '/Beach/slide4.jpg',
+      '/Beach/slide5.jpg',
+      '/Beach/slide6.jpg',
+      '/Beach/slide7.jpg',
+      '/Beach/slide8.jpg'
+    ]
+  },
+  { 
+    id: 'mag3', 
+    title: 'Dream', 
+    type: 'magazine', 
+    color: 'bg-blue-200',
+    // ✅ ADDED: Pages for third magazine
+    pages: [
+      '/Motivation/slide1.jpg', 
+      '/Motivation/slide2.jpg',
+      '/Motivation/slide3.jpg',
+      '/Motivation/slide4.jpg',
+      '/Motivation/slide5.jpg',
+      '/Motivation/slide6.jpg',
+      '/Motivation/slide7.jpg',
+      '/Motivation/slide8.jpg'
+    ]
+  },
+  { 
+    id: 'mag4', 
+    title: 'Nature', 
+    type: 'magazine', 
+    color: 'bg-purple-200',
+    pages: [
+      '/Nature/slide1.jpg', 
+      '/Nature/slide2.jpg',
+      '/Nature/slide3.jpg',
+      '/Nature/slide4.jpg',
+      '/Nature/slide5.jpg',
+      '/Nature/slide6.jpg',
+      '/Nature/slide7.jpg',
+      '/Nature/slide8.jpg'
+    ]
+  },
 ];
 
+// (Novels and Jokes stay mostly the same, but we ensure they have IDs)
 const novels = [
-  { id: 'nov1', title: 'The Silent Hill', type: 'novel', color: 'bg-amber-100' },
-  { id: 'nov2', title: 'Journey Within', type: 'novel', color: 'bg-orange-100' },
-  { id: 'nov3', title: 'Ocean Whisper', type: 'novel', color: 'bg-cyan-100' },
-  { id: 'nov4', title: 'Lost in Time', type: 'novel', color: 'bg-slate-200' },
+  { 
+    id: 'nov1', 
+    title: 'The Silent Hill', 
+    type: 'novel', 
+    color: 'bg-amber-100',
+    // ✅ ADDED: Path to your PDF file
+    pdf: '/Novels/AsAManThinketh.pdf' 
+  },
+  { 
+    id: 'nov2', 
+    title: 'Journey Within', 
+    type: 'novel', 
+    color: 'bg-orange-100',
+    pdf: '/novels/journey-within.pdf'
+  },
+  { 
+    id: 'nov3', 
+    title: 'Ocean Whisper', 
+    type: 'novel', 
+    color: 'bg-cyan-100',
+    pdf: '/novels/ocean-whisper.pdf'
+  },
+  { 
+    id: 'nov4', 
+    title: 'Lost in Time', 
+    type: 'novel', 
+    color: 'bg-slate-200',
+    pdf: '/novels/lost-in-time.pdf'
+  },
 ];
 
 const jokes = [
@@ -21,6 +113,10 @@ const jokes = [
   { id: 'joke3', title: 'Animal Puns', type: 'joke', color: 'bg-lime-200' },
   { id: 'joke4', title: 'Daily Giggles', type: 'joke', color: 'bg-fuchsia-200' },
 ];
+
+// ---------------------------------------------------------
+// COMPONENT
+// ---------------------------------------------------------
 
 function BooksLibrary() {
   const navigate = useNavigate();
@@ -34,6 +130,7 @@ function BooksLibrary() {
         {items.map((item) => (
           <div
             key={item.id}
+            // THIS LINE SENDS THE DATA (including the new pages array)
             onClick={() => navigate('/book-reader', { state: { book: item } })}
             className={`${item.color} h-40 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer flex flex-col items-center justify-center p-4 border-2 border-white`}
           >
