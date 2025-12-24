@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { 
   Heart, Shield, Sparkles, 
   ArrowRight, Mail, Phone, MapPin, 
-  Smile, Activity, Users, Zap
+  Activity, Users, Zap
 } from "lucide-react";
 
 // --- Data: Quotes Collection ---
@@ -19,7 +19,6 @@ const quotes = [
 ];
 
 // --- Helper Component: Scroll Animation Wrapper ---
-// This component wraps sections and makes them slide up when they enter the viewport
 const RevealOnScroll = ({ children, delay = 0 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef(null);
@@ -29,10 +28,10 @@ const RevealOnScroll = ({ children, delay = 0 }) => {
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          observer.unobserve(entry.target); // Only animate once
+          observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.1 } // Trigger when 10% of the element is visible
+      { threshold: 0.1 }
     );
 
     if (ref.current) {
@@ -66,7 +65,6 @@ const LandingPage = () => {
 
   const generateSpark = () => {
     setIsAnimating(true);
-    // Simulate a brief "thinking" delay for better UX
     setTimeout(() => {
       const randomIndex = Math.floor(Math.random() * quotes.length);
       setSpark(quotes[randomIndex]);
@@ -81,19 +79,21 @@ const LandingPage = () => {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           
-          {/* Logo */}
+          {/* Logo (Updated to use Image) */}
           <div className="flex items-center gap-2 cursor-pointer group" onClick={() => navigate("/")}>
-            <div className="w-10 h-10 bg-teal-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md group-hover:bg-teal-700 transition">
-              MH
-            </div>
-            <span className="text-xl font-bold text-slate-800 tracking-wide group-hover:text-teal-700 transition">MindHaven</span>
+            {/* Image Logo */}
+            <img 
+              src="video/healware-logo.png" // Make sure this file is in your 'public' folder
+              alt="Healware Logo"
+              className="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-300" 
+            />
+            <span className="text-xl font-bold text-slate-800 tracking-wide group-hover:text-teal-700 transition">Healware</span>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8 font-medium text-slate-600">
             <a href="#home" className="hover:text-teal-600 transition hover:underline underline-offset-4">Home</a>
             <a href="#spark" className="hover:text-teal-600 transition hover:underline underline-offset-4">Daily Spark</a>
-            <a href="#about" className="hover:text-teal-600 transition hover:underline underline-offset-4">About</a>
             <a href="#features" className="hover:text-teal-600 transition hover:underline underline-offset-4">Services</a>
             <a href="#contact" className="hover:text-teal-600 transition hover:underline underline-offset-4">Contact</a>
           </nav>
@@ -165,7 +165,7 @@ const LandingPage = () => {
                 <Sparkles className="absolute bottom-6 right-6 text-yellow-300 opacity-60 animate-pulse" size={30} />
 
                 <h3 className="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
-                   Your Daily Dose of Clarity
+                    Your Daily Dose of Clarity
                 </h3>
 
                 {/* The Spark Logic Area */}
@@ -185,7 +185,7 @@ const LandingPage = () => {
                   ) : (
                     // State 2: After Clicking (Show Quote)
                     <div className="animate-fade-in flex flex-col items-center">
-                       <blockquote className="text-2xl md:text-3xl font-serif italic leading-relaxed mb-4 text-yellow-50">
+                        <blockquote className="text-2xl md:text-3xl font-serif italic leading-relaxed mb-4 text-yellow-50">
                         "{spark.text}"
                       </blockquote>
                       <cite className="block text-indigo-200 font-semibold not-italic mb-8">
@@ -213,7 +213,7 @@ const LandingPage = () => {
         <div className="container mx-auto px-6">
           <RevealOnScroll>
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Why MindHaven?</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Why Healware?</h2>
               <p className="text-slate-600 max-w-2xl mx-auto text-lg">
                 We combine technology with compassion to provide a holistic approach to mental well-being.
               </p>
@@ -296,11 +296,16 @@ const LandingPage = () => {
           <RevealOnScroll>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
               
-              {/* Brand */}
+              {/* Brand (Updated to use Image) */}
               <div>
                 <div className="flex items-center gap-2 mb-6">
-                  <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center text-white font-bold">MH</div>
-                  <span className="text-xl font-bold text-white">MindHaven</span>
+                  {/* Image Logo */}
+                  <img 
+                    src="video/healware-logo.png" // Ensure this is in your 'public' folder
+                    alt="Healware Logo"
+                    className="h-8 w-auto object-contain" 
+                  />
+                  <span className="text-xl font-bold text-white">Healware</span>
                 </div>
                 <p className="text-sm leading-relaxed mb-6 text-slate-400">
                   Your daily companion for mental wellness. Empowering you to live a happier, healthier life through technology and care.
@@ -335,7 +340,7 @@ const LandingPage = () => {
                 <ul className="space-y-4 text-sm">
                   <li className="flex items-start gap-3 group cursor-pointer">
                     <Mail className="text-teal-500 shrink-0 group-hover:text-white transition" size={18} />
-                    <span className="group-hover:text-white transition">support@mindhaven.com</span>
+                    <span className="group-hover:text-white transition">support@Healware.com</span>
                   </li>
                   <li className="flex items-start gap-3 group cursor-pointer">
                     <Phone className="text-teal-500 shrink-0 group-hover:text-white transition" size={18} />
@@ -351,7 +356,7 @@ const LandingPage = () => {
           </RevealOnScroll>
 
           <div className="border-t border-slate-800 pt-8 text-center text-xs text-slate-500">
-            © 2025 MindHaven. All Rights Reserved.
+            © 2025 Healware. All Rights Reserved.
           </div>
         </div>
       </footer>

@@ -1,15 +1,16 @@
-import { useState, useEffect } from "react"; // Import useEffect
+// src/components/Login.jsx
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { apiEndpoints } from "../components/utils/apiEndpoints";
 
 function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
-  const [rememberMe, setRememberMe] = useState(false); // State for the checkbox
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Added loading state for better UX
   const navigate = useNavigate();
 
-  // This effect runs when the component loads
   useEffect(() => {
     const rememberedUser = localStorage.getItem("rememberedUser");
     if (rememberedUser) {
@@ -24,15 +25,14 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(""); // Clear previous errors
+
     try {
       const res = await axios.post(apiEndpoints.LOGIN_API, form);
-      // 1. Save the token under the key "token"
       localStorage.setItem("token", res.data.token);
-
-      // 2. Save the user object under the key "user"
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      // Handle "Remember Me" logic
       if (rememberMe) {
         localStorage.setItem("rememberedUser", JSON.stringify(form));
       } else {
@@ -41,72 +41,99 @@ function Login() {
       
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.response?.data?.message || "Login failed. Please check your credentials.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div
-      className="flex h-screen items-center justify-center bg-cover bg-center relative"
-      style={{
-        backgroundImage: `url('/Cover_image.png')`,
-      }}
-    >
-      <div className="relative z-10 w-full max-w-md p-8 rounded-2xl bg-white/30 backdrop-blur-xl border border-white/40 shadow-xl shadow-red-500/30">
-        <h2 className="text-3xl font-bold text-center text-pink-600 mb-6">
-          Login Page
+    // 1. Background updated to match Dashboard gradient
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-slate-50 to-emerald-50 p-4 font-sans selection:bg-teal-200">
+      
+      {/* 2. Card container updated to match Dashboard aesthetic (clean white, soft shadow) */}
+      <div className="w-full max-w-md p-8 rounded-3xl bg-white shadow-xl border border-slate-100">
+        
+        {/* Added Branding Logo to match Header */}
+        <div className="flex justify-center mb-6">
+            <img 
+              src="video/healware-logo.png" // Make sure this file is in your 'public' folder
+              alt="Healware Logo"
+              className="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-300" 
+            />
+        </div>
+
+        <h2 className="text-2xl font-bold text-center text-slate-800 mb-8">
+          Sign in to Healware
         </h2>
 
-        {error && <p className="text-red-400 mb-3">{error}</p>}
+        {/* Error Message - updated colors */}
+        {error && (
+          <div className="mb-6 p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-sm text-center">
+            {error}
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your Email"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl bg-white/40 border border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-400 shadow-inner placeholder-gray-600"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter your Password"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl bg-white/40 border border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-400 shadow-inner placeholder-gray-600"
-            required
-          />
-          <div className="flex items-center justify-between text-sm text-white/80">
-            {/* ✅ MODIFIED: Remember Me Checkbox */}
-            <label className="flex items-center space-x-2 text-purple-500">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+             <label className="block text-sm font-medium text-slate-600 mb-1 ml-1">Email Address</label>
+             <input
+               type="email"
+               name="email"
+               placeholder="you@example.com"
+               value={form.email}
+               onChange={handleChange}
+               // 3. Inputs updated to use slate borders and teal focus rings
+               className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all placeholder-slate-400 text-slate-700"
+               required
+             />
+          </div>
+          
+          <div>
+             <label className="block text-sm font-medium text-slate-600 mb-1 ml-1">Password</label>
+             <input
+               type="password"
+               name="password"
+               placeholder="••••••••"
+               value={form.password}
+               onChange={handleChange}
+               className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all placeholder-slate-400 text-slate-700"
+               required
+             />
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <label className="flex items-center space-x-2 cursor-pointer">
               <input 
                 type="checkbox" 
-                className="accent-red-300" 
+                // 4. Checkbox accent color changed to teal
+                className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500 accent-teal-600" 
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
               />
-              <span>Remember me</span>
+              <span className="text-slate-600 font-medium">Remember me</span>
             </label>
             
-            {/* ✅ MODIFIED: Forgot Password Link */}
-            <Link to="/forgot-password" className="hover:text-red-500 text-purple-500">
+            {/* 5. Link colors changed to teal */}
+            <Link to="/forgot-password" className="font-medium text-teal-600 hover:text-teal-700 hover:underline transition">
               Forgot Password?
             </Link>
           </div>
+
+          {/* 6. Button updated to teal gradient */}
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-lg hover:opacity-90 transition"
+            disabled={isLoading}
+            className={`w-full py-3 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 text-white font-bold shadow-md hover:shadow-lg hover:from-teal-600 hover:to-teal-700 transition-all duration-300 transform hover:-translate-y-0.5 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
-            Login
+            {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
-        <p className="text-center text-gray-700 mt-6">
+        <p className="text-center text-slate-600 mt-8 text-sm">
           Don’t have an account?{" "}
-          <Link to="/signup" className="text-pink-600 font-semibold hover:underline">
-            Sign Up
+          <Link to="/signup" className="text-teal-600 font-bold hover:text-teal-700 hover:underline transition">
+            Sign Up Now
           </Link>
         </p>
       </div>

@@ -1,88 +1,107 @@
+// src/components/ResetPassword.jsx
 import { useState } from "react";
-// ❌ REMOVED: react-router-dom hooks are not available in this context
-// import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { apiEndpoints } from "../components/utils/apiEndpoints";
 
 function ResetPassword() {
-  // ✅ MODIFIED: Get the token directly from the window's URL path
   const token = window.location.pathname.split('/').pop();
   
-  // ❌ REMOVED: useNavigate hook
-  // const navigate = useNavigate();
-
-  // State for the form inputs, success messages, and errors
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
     setError("");
 
-    // Step 1: Client-side validation to ensure passwords match
     if (password !== confirmPassword) {
       setError("Passwords do not match. Please try again.");
       return;
     }
 
+    setIsLoading(true);
+
     try {
-      // Step 2: Send the token and new password to the backend API endpoint
       const res = await axios.post(`${apiEndpoints.RESET_PASSWORD_API}/${token}`, { password });
       
-      // On success, display the confirmation message
       setMessage(res.data.message);
       
-      // Step 3: Redirect the user to the login page after a 3-second delay
       setTimeout(() => {
-        // ✅ MODIFIED: Use window.location.href for navigation
         window.location.href = "/login";
       }, 3000);
 
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div
-      className="flex h-screen items-center justify-center bg-cover bg-center relative"
-      style={{ backgroundImage: `url('/Cover_image.png')` }}
-    >
-      <div className="relative z-10 w-full max-w-md p-8 rounded-2xl bg-white/30 backdrop-blur-xl border border-white/40 shadow-xl shadow-red-500/30">
-        <h2 className="text-3xl font-bold text-center text-pink-600 mb-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-slate-50 to-emerald-50 p-4 font-sans selection:bg-teal-200">
+      
+      <div className="w-full max-w-md p-8 rounded-3xl bg-white shadow-xl border border-slate-100">
+        
+        {/* Branding Logo */}
+        <div className="flex justify-center mb-6">
+            <img 
+              src="video/healware-logo.png" // Make sure this file is in your 'public' folder
+              alt="Healware Logo"
+              className="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-300" 
+            />
+        </div>
+
+        <h2 className="text-2xl font-bold text-center text-slate-800 mb-2">
           Set a New Password
         </h2>
+        <p className="text-center text-slate-500 mb-8 text-sm">Enter your new credentials below</p>
 
-        {/* Display success or error messages to the user */}
-        {message && <p className="text-green-600 bg-green-100 p-3 rounded-lg text-center mb-4">{message}</p>}
-        {error && <p className="text-red-600 bg-red-100 p-3 rounded-lg text-center mb-4">{error}</p>}
+        {/* Feedback Messages */}
+        {message && (
+          <div className="mb-6 p-3 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm text-center font-medium">
+            {message}
+          </div>
+        )}
+        {error && (
+          <div className="mb-6 p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-sm text-center">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <input
-            type="password"
-            placeholder="Enter new password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl bg-white/40 border border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-400 shadow-inner placeholder-gray-600"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Confirm new password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl bg-white/40 border border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-400 shadow-inner placeholder-gray-600"
-            required
-          />
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1 ml-1">New Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all placeholder-slate-400 text-slate-700"
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1 ml-1">Confirm Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all placeholder-slate-400 text-slate-700"
+              required
+            />
+          </div>
+
           <button
             type="submit"
-            disabled={!!message} // Disable the button after a successful submission
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-lg hover:opacity-90 transition disabled:opacity-50"
+            disabled={!!message || isLoading} 
+            className={`w-full py-3 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 text-white font-bold shadow-md hover:shadow-lg hover:from-teal-600 hover:to-teal-700 transition-all duration-300 transform hover:-translate-y-0.5 ${(!!message || isLoading) ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
-            Update Password
+             {isLoading ? "Updating..." : "Update Password"}
           </button>
         </form>
       </div>
@@ -91,4 +110,3 @@ function ResetPassword() {
 }
 
 export default ResetPassword;
-
