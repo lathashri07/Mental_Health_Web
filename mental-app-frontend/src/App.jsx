@@ -17,6 +17,7 @@ import BookReader from "./BookReader";
 import LandingPage from "../pages/LandingPage";
 import FaceRecognition from "./FaceRecognition";
 import Feedback from "./Feedback";
+import Profile from "../pages/Profile";
 
 
 function App() {
@@ -38,7 +39,8 @@ function App() {
       <Route path="/books-library" element={<BooksLibrary />} />
       <Route path="/book-reader" element={<BookReader />} />
       <Route path="/face-recognition" element={<FaceRecognition />} />
-      <Route path="/feedback" element={<Feedback/>} />  
+      <Route path="/feedback" element={<Feedback/>} /> 
+      <Route path="/profile" element={<Profile />} />
       <Route path="/" element={<LandingPage />} />
     </Routes>
   );
