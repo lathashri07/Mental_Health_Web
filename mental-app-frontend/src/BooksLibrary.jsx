@@ -1,16 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 
-// ---------------------------------------------------------
-// UPDATED DATA SECTION
-// ---------------------------------------------------------
-
 const magazines = [
   { 
     id: 'mag1', 
     title: 'Peace', 
     type: 'magazine', 
     color: 'bg-red-200',
-    // ✅ ADDED: Specific pages for this magazine
     pages: [
       '/Buddha/slide1.jpg', 
       '/Buddha/slide2.jpg',
@@ -27,7 +22,6 @@ const magazines = [
     title: 'Beach Vibes', 
     type: 'magazine', 
     color: 'bg-green-200',
-    // ✅ ADDED: Different pages for the second magazine
     pages: [
       '/Beach/slide1.jpg', 
       '/Beach/slide2.jpg',
@@ -44,7 +38,6 @@ const magazines = [
     title: 'Dream', 
     type: 'magazine', 
     color: 'bg-blue-200',
-    // ✅ ADDED: Pages for third magazine
     pages: [
       '/Motivation/slide1.jpg', 
       '/Motivation/slide2.jpg',
@@ -78,40 +71,39 @@ const magazines = [
 const novels = [
   { 
     id: 'nov1', 
-    title: 'The Silent Hill', 
+    title: 'Living More Life', 
     type: 'novel', 
     color: 'bg-amber-100',
-    // ✅ ADDED: Path to your PDF file
-    pdf: '/Novels/AsAManThinketh.pdf' 
+    pdf: '/Novels/LivingMoreLife.pdf' 
   },
   { 
     id: 'nov2', 
-    title: 'Journey Within', 
+    title: 'The Gentle Green', 
     type: 'novel', 
     color: 'bg-orange-100',
-    pdf: '/novels/journey-within.pdf'
+    pdf: '/Novels/GentleGreen.pdf'
   },
   { 
     id: 'nov3', 
-    title: 'Ocean Whisper', 
+    title: 'The Secret of Success', 
     type: 'novel', 
     color: 'bg-cyan-100',
-    pdf: '/novels/ocean-whisper.pdf'
+    pdf: '/Novels/SecretSucces.pdf'
   },
   { 
     id: 'nov4', 
-    title: 'Lost in Time', 
+    title: 'The Therapy', 
     type: 'novel', 
     color: 'bg-slate-200',
-    pdf: '/novels/lost-in-time.pdf'
+    pdf: '/Novels/TheTherapy.pdf'
   },
 ];
 
 const jokes = [
-  { id: 'joke1', title: 'Dad Jokes 101', type: 'joke', color: 'bg-yellow-200' },
-  { id: 'joke2', title: 'Office Humor', type: 'joke', color: 'bg-pink-200' },
-  { id: 'joke3', title: 'Animal Puns', type: 'joke', color: 'bg-lime-200' },
-  { id: 'joke4', title: 'Daily Giggles', type: 'joke', color: 'bg-fuchsia-200' },
+  { id: 'joke1', title: 'Siri’s Brutal Honesty', type: 'joke', color: 'bg-yellow-200' },
+  { id: 'joke2', title: 'The Onion Theory Gone Wrong', type: 'joke', color: 'bg-pink-200' },
+  { id: 'joke3', title: 'Golf Fashion Emergency', type: 'joke', color: 'bg-lime-200' },
+  { id: 'joke4', title: 'Grammar with a Savage Twist', type: 'joke', color: 'bg-fuchsia-200' },
 ];
 
 // ---------------------------------------------------------

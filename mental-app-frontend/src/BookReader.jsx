@@ -167,8 +167,10 @@ function BookReader() {
   // 3. JOKES VIEW (Interactive Emojis)
   // -------------------------
   const jokeList = [
-    "Why don't scientists trust atoms?\n\nBecause they make up everything!",
-    "I told my wife she was drawing her eyebrows too high.\n\nShe looked surprised.",
+    "Today, I asked my phone “Siri, why am I still single?” and it activated the front camera?",
+    "My friend thinks he is smart. He told me an onion is the only food that makes you cry, so I threw a coconut at his face.",
+    "Why did the golfer wear two pairs of pants? \n\n A: In case he got a hole in one.",
+    "An old teacher asked her student, \"If I say, 'I am beautiful,' which tense is that?\" \n\n The student replied, \"It is obviously past.\""
   ];
   const emojis = ['😂', '🤣', '😝', '🤯', '💀', '😊'];
   const handleEmojiClick = (emoji) => {
