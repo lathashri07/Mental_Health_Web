@@ -1,19 +1,125 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// Dummy Data (Replace with your actual audio URLs)
-const instrumentalTracks = Array(8).fill({
-  id: 1, title: "Calm Piano", artist: "Relaxing Sounds", 
-  cover: "https://placehold.co/150/orange/white?text=Piano", 
-  url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" 
-}).map((t, i) => ({ ...t, id: `inst-${i}`, title: `Instrumental ${i+1}` }));
+// --- INSTRUMENTAL TRACKS DATA (8 Items) ---
+const instrumentalTracks = [
+  {
+    id: "inst-1",
+    title: "Gentle Guitar",
+    artist: "Calm Strings",
+    cover: "/CoverPages/tumbnail1.png",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766560287/WhatsApp_Video_2025-12-05_at_11.45.32_AM_rgwts4.mp4" 
+  },
+  {
+    id: "inst-2",
+    title: "Deep Sleep Piano",
+    artist: "Brainwave Music",
+    cover: "/CoverPages/tumbnail2.png",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766562663/Instru2_xvaom8.mp4"
+  },
+  {
+    id: "inst-3",
+    title: "Acoustic Morning",
+    artist: "Piano Vibes",
+    cover: "/CoverPages/tumbnail3.png",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766562668/Instru3_jdxh2j.mp4"
+  },
+  {
+    id: "inst-4",
+    title: "Lo-Fi Beats",
+    artist: "Chill Hop",
+    cover: "/CoverPages/tumbnail4.png",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766562676/Instru4_tddlky.mp4"
+  },
+  {
+    id: "inst-5",
+    title: "Forest Ambience",
+    artist: "Nature Sounds",
+    cover: "/CoverPages/tumbnail5.png",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766562683/Instru5_tp22ak.mp4"
+  },
+  {
+    id: "inst-6",
+    title: "Ocean Waves",
+    artist: "Deep Sleep",
+    cover: "/CoverPages/tumbnail6.png",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766562691/Instru6_e0z19a.mp4"
+  },
+  {
+    id: "inst-7",
+    title: "Soft Strings",
+    artist: "Orchestra",
+    cover: "/CoverPages/tumbnail7.png",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766562697/Instru7_h7espf.mp4"
+  },
+  {
+    id: "inst-8",
+    title: "Night Cricket",
+    artist: "Relaxing Sounds",
+    cover: "/CoverPages/tumbnail8.png",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766562703/Instru8_tbsxlj.mp4"
+  },
+];
 
-const spiritualTracks = Array(8).fill({
-  id: 2, title: "Om Chanting", artist: "Spiritual Vibes", 
-  cover: "https://placehold.co/150/purple/white?text=Om", 
-  url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" 
-}).map((t, i) => ({ ...t, id: `spir-${i}`, title: `Spiritual ${i+1}` }));
-
+// --- SPIRITUAL TRACKS DATA (8 Items) ---
+const spiritualTracks = [
+  {
+    id: "spir-1",
+    title: "Hare Krishna Chanting",
+    artist: "Spiritual Vibes",
+    cover: "/CoverPages/cover.jpg",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766567275/Maha_Mantras-_HARE_KRISHNA_HARE_RAMA___Divine_Maha_Mantra___Sound_of_Mantras___Krishan_Bhajan___21_lcgyqm.mp4"
+  },
+  {
+    id: "spir-2",
+    title: "Tibetan Bowls",
+    artist: "Healing Sound",
+    cover: "/CoverPages/coverb1.jpg",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766567304/The_Bliss_of_Nirvana_l_Full_Chant_l_Jaymangal_Atthagatha_l_Pawa_l_Greatest_Buddha_Meditation_Music_jsdcln.mp4"
+  },
+  {
+    id: "spir-3",
+    title: "Theme of Lord Shiva",
+    artist: "Divine Melodies",
+    cover: "/CoverPages/covers1.jpg",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766567989/Theme_of_Lord_Shiva____Powerful_Fusion_Music____s0hx2r.mp4"
+  },
+  {
+    id: "spir-4",
+    title: "jesus love of god",
+    artist: "Christian Hymns",
+    cover: "/CoverPages/coverj1.webp",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766568509/jesus_cd3n1k.mp3"
+  },
+  {
+    id: "spir-5",
+    title: "Cosmic Energy",
+    artist: "Universe Sounds",
+    cover: "/CoverPages/coverg1.jpg",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766567270/Gajananam_-_Armonian_wkua19.mp4"
+  },
+  {
+    id: "spir-6",
+    title: "Shree Ram Stuti",
+    artist: "Devotional Bhajans",
+    cover: "/CoverPages/coverR1.jpg",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766567294/Shree_Ram_Stuti___Sonika_Sharma_Agarwal___Ram_Bhajan___Vickky_Agarwal___Full_Video_-_Lyrical_fzsfde.mp4"
+  },
+  {
+    id: "spir-7",
+    title: "Hanuman power of devotion",
+    artist: "Spiritual Beats",
+    cover: "/CoverPages/coverh1.webp",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766567281/Raghunandan_Slowed_Reverb___HanuMan_2023___pslofi_gnauex.mp4"
+  },
+  {
+    id: "spir-8",
+    title: "Flute of Peace",
+    artist: "Radha Krishna",
+    cover: "/CoverPages/coverk2.jpg",
+    url: "https://res.cloudinary.com/dvqthpmp6/video/upload/v1766567555/Flute_of_Peace___Shri_Krishna_Relaxing_Instrumental_bblpix.mp4"
+  },
+];
 
 function MusicTherapy() {
   const navigate = useNavigate();
