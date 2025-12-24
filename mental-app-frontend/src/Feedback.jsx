@@ -105,7 +105,7 @@ const Feedback = () => {
           <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 sticky top-28">
             <h2 className="text-2xl font-bold text-slate-800 mb-2">Share your thoughts</h2>
             <p className="text-slate-500 mb-6 text-sm">
-              Your feedback helps us improve MindHaven for everyone. How was your experience?
+              Your feedback helps us improve Healware for everyone. How was your experience?
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">

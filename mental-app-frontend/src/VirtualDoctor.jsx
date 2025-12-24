@@ -2,6 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import Webcam from 'react-webcam';
 import { useNavigate } from 'react-router-dom';
 
+const DoctorPlaceholder = () => (
+  <div className="w-full h-full bg-blue-100 flex flex-col items-center justify-center rounded-lg">
+    <div className="w-32 h-32 bg-blue-300 rounded-full mb-4 animate-pulse"></div>
+    <p className="text-blue-800 font-semibold">Dr. Nova (AI)</p>
+  </div>
+);
+
 function VirtualDoctor() {
   const [isCallActive, setIsCallActive] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -134,7 +141,7 @@ function VirtualDoctor() {
         
         {/* DOCTOR VIEW (AI) */}
         <div className="relative bg-gray-800 rounded-2xl overflow-hidden shadow-2xl border-2 border-gray-700">
-           <video src="Virtual_Doctor.mp4" autoPlay loop muted className="w-full h-full object-cover" />
+           <DoctorPlaceholder />
            
            {/* Visualizer when talking */}
            {isSpeaking && (
