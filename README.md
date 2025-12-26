@@ -15,7 +15,7 @@
 
 ## 💡 About the Project
 
-In today's fast-paced world, mental health support is often inaccessible or expensive. **[Project Name]** is designed to provide a safe, immediate, and digital sanctuary for users. 
+In today's fast-paced world, mental health support is often inaccessible or expensive. Healware is designed to provide a safe, immediate, and digital sanctuary for users. 
 
 This project is a **Full-Stack Web Application** that combines therapeutic resources with modern technology (AI) to help users track their well-being, seek help, and de-stress effectively.
 
