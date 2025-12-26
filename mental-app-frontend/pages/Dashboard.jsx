@@ -192,7 +192,7 @@ function Dashboard() {
       color: "bg-rose-50 text-rose-600 border-rose-100"
     },
     { 
-      title: "Yoga & Video", 
+      title: "Yoga & Meditation", 
       desc: "Physical wellness meets mental peace. Follow guided yoga sessions and therapeutic videos tailored for stress relief.", 
       icon: <Video size={40} />, 
       path: "/video-therapy", 
