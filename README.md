@@ -1,6 +1,6 @@
 # 🧠 [Project Name] - Healware
 
-![Status](https://img.shields.io/badge/Status-Completed-success)        ![Stack](https://img.shields.io/badge/Stack-MERN-blue)        ![Focus](https://img.shields.io/badge/Focus-AI%20%26%20Mental%20Health-purple)
+![Status](https://img.shields.io/badge/Status-Completed-success) ![Stack](https://img.shields.io/badge/Stack-React_Node_MySQL-blue) ![Focus](https://img.shields.io/badge/Focus-AI%20%26%20Mental%20Health-purple)
 
 > **Bridging the gap between silence and support. A full-stack solution for accessible mental healthcare.**
 
@@ -83,8 +83,10 @@ cd your-repo
 npm install
 
 # Create .env file in root and add:
-PORT=5000
-MYSQL_URI=your_mysql_connection_string
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=your_password
+DB_NAME=your_db
 JWT_SECRET=your_super_secret_key
 .....
 
