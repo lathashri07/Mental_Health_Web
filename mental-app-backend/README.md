@@ -9,7 +9,7 @@
 ## 🎥 Project Demo
 *Watch how the platform works, from secure login to AI-powered support.*
 
-[![Watch the Demo](https://img.youtube.com/vi/https:/zOLWapYvFM0/maxresdefault.jpg)](https://youtu.be/zOLWapYvFM0)
+[![Watch the Demo](https://img.youtube.com/vi/zOLWapYvFM0/maxresdefault.jpg)](https://youtu.be/zOLWapYvFM0)
 
 > **Note:** Click the image above to watch the full walkthrough on YouTube.
 
@@ -88,6 +88,7 @@ npm install
 PORT=5000
 MYSQL_URI=your_mysql_connection_string
 JWT_SECRET=your_super_secret_key
+....
 
 3. Frontend Setup
 cd client
