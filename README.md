@@ -1,6 +1,6 @@
-# 🧠 [Project Name] - Healware
+# 🧠 Healware - Mental Health & Well-being Platform
 
-![Status](https://img.shields.io/badge/Status-Completed-success)        ![Stack](https://img.shields.io/badge/Stack-MERN-blue)        ![Focus](https://img.shields.io/badge/Focus-AI%20%26%20Mental%20Health-purple)
+![Status](https://img.shields.io/badge/Status-Completed-success) ![Stack](https://img.shields.io/badge/Stack-React_Node_MySQL-blue) ![Focus](https://img.shields.io/badge/Focus-AI%20%26%20Mental%20Health-purple)
 
 > **Bridging the gap between silence and support. A full-stack solution for accessible mental healthcare.**
 
@@ -57,7 +57,7 @@ An intelligent chatbot integrated with [Gemini] API.
 * **Frontend:** React.js, Tailwind CSS
 * **Backend:** Node.js, Express.js
 * **Database:** MYSQL
-* **AI Integration:** [Google Gemini]
+* **AI Integration:** Google Gemini
 
 ---
 
@@ -75,7 +75,7 @@ An intelligent chatbot integrated with [Gemini] API.
 
 **1. Clone the Repository**
 ```bash
-git clone [https://github.com/your-username/your-repo.git](https://github.com/your-username/your-repo.git)
+git clone [https://github.com/lathashri07/Mental_Health_Web.git](https://github.com/lathashri07/Mental_Health_Web.git)
 cd your-repo
 
 2. Backend Setup
@@ -83,8 +83,10 @@ cd your-repo
 npm install
 
 # Create .env file in root and add:
-PORT=5000
-MYSQL_URI=your_mysql_connection_string
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=your_password
+DB_NAME=your_db
 JWT_SECRET=your_super_secret_key
 .....
 
@@ -102,6 +104,6 @@ npm run dev
 
 </details>
 📬 Contact
-[Lathashri K H] Computer Science Engineering Student
 
-[https://www.linkedin.com/in/lathashri37/] | [lathashrikh186@gmail.com]
+**Lathashri K H** - Computer Science Engineering Student
+https://www.linkedin.com/in/lathashri37/ | lathashrikh186@gmail.com
