@@ -3,3 +3,6 @@ node_modules/
 package-lock.json
 package.json
 service-account-key.json
+auth_link.txt
+*.key.json
+*-key.json
